@@ -20,14 +20,15 @@ const ZHUYIN_TO_BRAILLE: Record<string, string> = {
   'ㄍ': '⠅', 'ㄎ': '⠇', 'ㄏ': '⠗', 'ㄐ': '⠅', 'ㄑ': '⠚', 'ㄒ': '⠑', 'ㄓ': '⠁', 'ㄔ': '⠃', 'ㄕ': '⠊',
   'ㄖ': '⠛', 'ㄗ': '⠓', 'ㄘ': '⠚', 'ㄙ': '⠑',
   // Medials
-  'ㄧ': '⠡', 'ㄨ': '⠥', 'ㄩ': '⠳',//介母 a
+ 'ㄧ': '⠡', 'ㄨ': '⠥', 'ㄩ': '⠳',//介母 i u yu
   // Finals
   'ㄚ': '⠜', 'ㄛ': '⠣', 'ㄜ': '⠮', 'ㄝ': '⠢', 'ㄞ': '⠺', 'ㄟ': '⠴', 'ㄠ': '⠩', 'ㄡ': '⠷',
   'ㄢ': '⠧', 'ㄣ': '⠥', 'ㄤ': '⠭', 'ㄥ': '⠵', 'ㄦ': '⠱',
-  'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴','ㄧㄞ': '⠢'
-  'ㄨㄚ': '⠔', 'ㄨㄛ': '⠒', 'ㄨㄞ': '⠶', 'ㄨㄟ': '⠫', 'ㄨㄢ': '⠻', 'ㄨㄣ': '⠿', 'ㄨㄤ': '⠸', 'ㄨㄥ': '⠯',
-  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲','ㄩㄥ': '⠖'
-  // Tones
+  'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴','ㄧㄞ': '⠢',
+ 'ㄨㄚ': '⠔', 'ㄨㄛ': '⠒', 'ㄨㄞ': '⠶', 'ㄨㄟ': '⠫', 'ㄨㄢ': '⠻', 'ㄨㄣ': '⠿', 'ㄨㄤ': '⠸', 'ㄨㄥ': '⠯', 'ㄨㄜ': '⠆',
+ 'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲','ㄩㄥ': '⠖','ㄩㄣˊ': '⠶', 'ㄩㄣˇ':'⠴' , 'ㄩㄣˋ': '⠂' , // Adding tone for ㄩㄣ based on the provided link
+
+  // Tones and space
   'ˊ': '⠂', 'ˇ': '⠈', 'ˋ': '⠆', '˙': '⠐',
   ' ': '⠀'
 };
@@ -99,17 +100,55 @@ export const brailleToEnglish = (braille: string): string => {
 };
 
 export const zhuyinToBraille = (text: string): string => {
-  return text.split('').map(char => ZHUYIN_TO_BRAILLE[char] || '').join('');
+  let result = '';
+  for (let i = 0; i < text.length; i++) {
+    let matched = false;
+    // Try to match longest possible combination (up to 3 characters for Zhuyin)
+    for (let len = 3; len >= 1; len--) {
+      if (i + len <= text.length) {
+        const substring = text.substring(i, i + len);
+        if (ZHUYIN_TO_BRAILLE[substring]) {
+ result += ZHUYIN_TO_BRAILLE[substring];
+ i += len - 1; // Move index by the length of the matched substring
+          matched = true;
+ break;
+        }
+      }
+    }
+    if (!matched) {
+      // If no Zhuyin combination is matched, just append the original character
+      result += text[i];
+    }
+  }
+  return result;
 };
 
 export const brailleToZhuyin = (braille: string): string => {
-  return braille.split('').map(char => {
-      const mapping = BRAILLE_TO_ZHUYIN[char];
-      // If multiple options, show first one. A better UI might let user choose.
-      return mapping ? mapping.split('/')[0] : '';
-  }).join('');
+  let result = '';
+  let i = 0;
+  while (i < braille.length) {
+    let matched = false;
+    // Try to match longest possible braille combination (if any longer combinations exist)
+    // Currently, all Zhuyin braille are single characters, but this structure is more robust
+    for (let len = 2; len >= 1; len--) { // Check for up to 2 characters, adjust if needed
+        if (i + len <= braille.length) {
+            const substring = braille.substring(i, i + len);
+            if (BRAILLE_TO_ZHUYIN[substring]) {
+                const mapping = BRAILLE_TO_ZHUYIN[substring];
+                result += mapping.split('/')[0]; // Use the first mapping
+                i += len;
+                matched = true;
+                break;
+            }
+        }
+    }
+    if (!matched) {
+ result += braille[i]; // If no mapping found, append the original braille character
+ i++;
+    }
+  }
+  return result;
 };
-
 export const getBrailleUnicodePattern = (char: string): boolean[] => {
     const code = char.charCodeAt(0);
     if (code < 0x2800 || code > 0x28FF) return [false, false, false, false, false, false];
