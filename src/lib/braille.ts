@@ -29,7 +29,7 @@ const ZHUYIN_TO_BRAILLE: Record<string, string> = {
  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲','ㄩㄥ': '⠖','ㄩㄣˊ': '⠶', 'ㄩㄣˇ':'⠴' , 'ㄩㄣˋ': '⠂' , // Adding tone for ㄩㄣ based on the provided link
 
   // Tones and space
-  'ˊ': '⠂', 'ˇ': '⠈', 'ˋ': '⠆', '˙': '⠐',
+  'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠆', '˙': '⠐',
   ' ': '⠀'
 };
 
