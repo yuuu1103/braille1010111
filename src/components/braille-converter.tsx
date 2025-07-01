@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { BrailleDisplay } from './braille-display';
 import { englishToBraille, brailleToEnglish, zhuyinToBraille, brailleToZhuyin } from '@/lib/braille';
+import { BrailleDotInput } from './braille-dot-input';
 
 type Mode = 'english' | 'zhuyin';
 type Direction = 'toBraille' | 'fromBraille';
@@ -59,6 +60,10 @@ export function BrailleConverter() {
     setOutputText('');
   }
 
+  const handleBrailleCharAdd = (char: string) => {
+    setSourceText(prev => prev + char);
+  };
+
   const { sourceLabel, outputLabel } = useMemo(() => {
     const language = mode === 'english' ? 'English' : '注音 (Zhuyin)';
     if (direction === 'toBraille') {
@@ -89,7 +94,7 @@ export function BrailleConverter() {
           </TabsContent>
         </Tabs>
 
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-start gap-4 mt-4">
           <div className="w-full space-y-2">
             <Label htmlFor="source-input">{sourceLabel}</Label>
             <Textarea
@@ -100,9 +105,10 @@ export function BrailleConverter() {
               className="min-h-[150px] resize-y"
               aria-label={`${sourceLabel} input`}
             />
+            {direction === 'fromBraille' && <BrailleDotInput onAddChar={handleBrailleCharAdd} />}
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center items-center h-full">
             <Button
               variant="ghost"
               size="icon"
