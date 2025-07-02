@@ -168,3 +168,7 @@ export const braillePatternToChar = (dots: boolean[]): string => {
   const pattern = dots.reduce((acc, dot, i) => acc | (dot ? (1 << i) : 0), 0);
   return String.fromCharCode(0x2800 + pattern);
 };
+
+export const getFontSizeStyle = (size: number) => {
+  return { fontSize: `${size}px` };
+};
