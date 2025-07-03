@@ -73,9 +73,6 @@ const AMBIGUOUS_BRAILLE: Record<string, { en?: string, num?: string, zhuyin?: st
   '⠠': { en: 'capital' }, // capital sign
   '⠼': { en: 'number', zhuyin: 'ㄝ' }, // number sign and ㄝ
   ' ': { en: ' ', zhuyin: ' ' }, // space character and space
-  '⠹': { zhuyin: 'ㄧㄣ/ㄥ' }, // ㄧㄣ/ㄥ
-  '⠡': { zhuyin: 'ㄧ/ㄦ' }, // ㄧ/ㄦ
-  '⠁': { zhuyin: '˙/ㄓ' } // Tone mark ˙ and ㄓ
 };
 
 
