@@ -1,39 +1,154 @@
 const ENGLISH_TO_BRAILLE: Record<string, string> = {
-  'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚', 'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞', 'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
-  '1': '⠁', '2': '⠃', '3': '⠉', '4': '⠙', '5': '⠑', '6': '⠋', '7': '⠛', '8': '⠓', '9': '⠊', '0': '⠚',
-  ' ': '⠀',
-  '.': '⠲', ',': '⠂', ';': '⠆', ':': '⠒', '/': '⠌', '?': '⠦', '!': '⠖', '(': '⠐⠣', ')': '⠐⠜', "'": '⠄', '-': '⠤',
+  'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚', 
+  'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞', 
+  'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+  
+  '1': '⠼⠁', '2': '	⠼⠃', '3': '	⠼⠉', '4': '⠼⠙', '5': '⠼⠑', '6': '⠼⠋', '7': '⠼⠛', '8': '⠼⠓', '9': '⠼⠊', '0': '⠼⠚',
+  
+  '.': '⠲', ',': '⠂', ';': '⠆', ':': '⠒', '?': '⠦', '!': '⠖', 
+  '(': '⠐⠣', ')': '⠐⠜', "'": '⠄', '-': '⠤', '/': '⠌',
+  
+  ' ': '⠀', // Braille space character
   'capital': '⠠',
  'number': '⠼', // Number sign
 };
+
 // Define braille characters that have multiple meanings
 const AMBIGUOUS_BRAILLE: Record<string, { en?: string, num?: string, zhuyin?: string }> = {
-  '⠁': { en: 'a', num: '1', zhuyin: 'ㄓ/˙' }, // Example: '⠁' is 'a', '1', 'ㄓ', '˙'
+  '⠁': { en: 'a', num: '1', zhuyin: 'ㄓ' }, // Dot 1 - a, 1, ㄓ
+  '⠃': { en: 'b', num: 'typescript
+  '⠁': { en: 'a', num: '1', zhuyin: 'ㄓ' }, // Dot 1 - a, 1, ㄓ
   '⠃': { en: 'b', num: '2', zhuyin: 'ㄔ' },
   '⠉': { en: 'c', num: '3', zhuyin: 'ㄌ' },
   '⠙': { en: 'd', num: '4', zhuyin: 'ㄉ' },
-  '⠑': { en: 'e', num: '5', zhuyin: 'ㄒ/ㄙ' },
+  '⠑': { en: 'e', num: '5', zhuyin: 'ㄙ' },
   '⠋': { en: 'f', num: '6', zhuyin: 'ㄊ' },
   '⠛': { en: 'g', num: '7', zhuyin: 'ㄖ' },
   '⠓': { en: 'h', num: '8', zhuyin: 'ㄗ' },
   '⠊': { en: 'i', num: '9', zhuyin: 'ㄕ' },
-  '⠚': { en: 'j', num: '0', zhuyin: 'ㄑ/ㄘ' },
-  '⠥': { en: 'u', zhuyin: 'ㄨ/ㄣ' }, // Add other ambiguous mappings
-  '⠧': { en: 'v', zhuyin: 'ㄢ' },
-  '⠺': { en: 'w', zhuyin: 'ㄞ' },
-  '⠭': { en: 'x', zhuyin: 'ㄤ' },
-  '⠽': { en: 'y', zhuyin: 'ㄧㄥ' },
-  '⠵': { en: 'z', zhuyin: 'ㄥ' },
-  '⠂': { en: ',', zhuyin: 'ˊ' },
-  '⠄': { en: "'", zhuyin: 'ˇ' },
-  '⠐': { en: '', zhuyin: 'ˋ' }, // Assuming this is only a tone mark
-  '⠲': { en: '.', zhuyin: 'ㄩㄣ' },
-  '⠆': { en: ';', zhuyin: 'ㄨㄜ' },
-  '⠒': { en: ':', zhuyin: 'ㄨㄛ' },
- '⠦': { en: '?', zhuyin: 'ㄩㄝ' }, // Need to differentiate between question mark and ㄩㄝ
- '⠖': { en: '!', zhuyin: 'ㄩㄥ' }, // Need to differentiate between exclamation mark and ㄩㄥ
-  '⠶': { en: '', zhuyin: 'ㄨㄞ/ㄩㄣˊ' },
-  '⠴': { en: 'ㄟ', zhuyin: 'ㄧㄛ/ㄩㄣˇ' },
+  '⠚': { en: 'j', num: '0', zhuyin: 'ㄘ' },
+
+  // Zhuyin specific
+  '⠅': { zhuyin: 'ㄍ/ㄐ' }, // k and ㄍ/ㄐ
+  '⠇': { zhuyin: 'ㄎ/ㄑ' }, // l and ㄎ/ㄑ
+  '⠗': { zhuyin: 'ㄏ/ㄖ' }, // r and ㄏ/ㄖ
+  '⠞': { en: 't', zhuyin: 'ㄧㄢ' }, // t and ㄧㄢ
+  '⠎': { en: 's', zhuyin: 'ㄧㄡ' }, // s and ㄧㄡ
+  '⠥': { en: 'u', zhuyin: 'ㄨ/ㄣ' }, // u, ㄨ, and ㄣ
+  '⠧': { en: 'v', zhuyin: 'ㄢ' }, // v and ㄢ
+  '⠺': { en: 'w', zhuyin: 'ㄨㄟ' }, // w and ㄨㄟ
+  '⠭': { en: 'x', zhuyin: 'ㄤ' }, // x and ㄤ
+  '⠽': { en: 'y', zhuyin: 'ㄧㄥ' }, // y and ㄧㄥ
+  '⠵': { en: 'z', zhuyin: 'ㄥ' }, // z and ㄥ
+
+  // Punctuation / Zhuyin Finals
+  '⠐': { zhuyin: 'ˋ' }, // Tone mark ˋ
+  '⠲': { en: '.', zhuyin: 'ㄩㄣ' }, // period and ㄩㄣ
+  '⠆': { en: ';', zhuyin: 'ㄨㄜ' }, // semicolon and ㄨㄜ
+  '⠒': { en: ':', zhuyin: 'ㄨㄛ' }, // colon and ㄨㄛ
+  '⠦': { en: '?', zhuyin: 'ㄩㄝ' }, // question mark and ㄩㄝ
+  '⠖': { en: '!', zhuyin: 'ㄩㄥ' }, // exclamation mark and ㄩㄥ
+  '⠶': { zhuyin: 'ㄨㄞ' }, // ㄨㄞ
+  '⠴': { zhuyin: 'ㄟ' }, // ㄟ and ㄧㄛ
+  '⠬': { zhuyin: 'ㄧㄝ' }, // ㄧㄝ
+  '⠪': { zhuyin: 'ㄧㄠ' }, // ㄧㄠ
+  '⠻': { zhuyin: 'ㄨㄢ' }, // ㄨㄢ
+  '⠿': { zhuyin: 'ㄨㄣ' }, // ㄨㄣ
+  '⠘': { zhuyin: 'ㄩㄢ' }, // ㄩㄢ
+  '⠳': { zhuyin: 'ㄩ' }, // ㄩ
+  '⠹': { zhuyin: 'ㄧㄣ' }, // ㄧㄣ and ㄥ
+  '⠡': { zhuyin: 'ㄧ' }, // ㄧ and ㄦ
+  '⠣': { zhuyin: 'ㄛ' }, // ㄛ
+  '⠜': { zhuyin: 'ㄚ' }, // ㄚ
+  '⠮': { zhuyin: 'ㄜ' }, // ㄜ
+  '⠢': { zhuyin: 'ㄝ/ㄧㄞ' }, // ㄝ/ㄧㄞ
+  '⠩': { zhuyin: 'ㄠ' }, // ㄠ
+  '⠷': { zhuyin: 'ㄡ' }, // ㄡ
+  '⠱': { zhuyin: 'ㄢ/ㄣ' }, // ㄢ/ㄣ
+  '⠾': { zhuyin: 'ㄧㄚ' }, // ㄧㄚ
+  '⠔': { zhuyin: 'ㄨㄚ' }, // ㄨㄚ
+  '⠫': { zhuyin: 'ㄨㄟ' }, // ㄨㄟ
+  '⠸': { zhuyin: 'ㄨㄤ' }, // ㄨㄤ
+  '⠯': { zhuyin: 'ㄨㄥ' }, // ㄨㄥ
+  '⠨': { zhuyin: 'ㄧㄤ' }, // ㄧㄤ
+  '⠂': { en: ',', zhuyin: 'ˊ' }, // comma and ˊ
+  '⠄': { en: "'", zhuyin: 'ˇ' }, // apostrophe and ˇ
+  '⠨': { en: 'capital', zhuyin: 'ㄧㄤ' }, // capital sign and ㄧㄤ
+  '⠼': { en: 'number', zhuyin: 'ㄝ' }, // number sign and ㄝ
+  '⠀': { en: ' ', zhuyin: ' ' }, // space character and space
+  '⠴': { zhuyin: 'ㄧㄛ/ㄟ' }, // ㄧㄛ/ㄟ
+  '⠹': { zhuyin: 'ㄧㄣ/ㄥ' }, // ㄧㄣ/ㄥ
+  '⠡': { zhuyin: 'ㄧ/ㄦ' }, // ㄧ/ㄦ
+  '⠁': { zhuyin: '˙/ㄓ' } // Tone mark ˙ and ㄓ
+};
+
+
+const BRAILLE_TO_ENGLISH = Object.entries(ENGLISH_TO_BRAILLE).reduce((acc, [key, value]) => {
+  if (value.length === 1) { // simple 1-to-1 mapping
+      if (!acc[value]) acc[value] = key;
+  } else if (value === '⠀') {
+      acc[value] = ' ';
+  }
+  return acc;
+}, {} as Record<string, string>);
+
+const ZHUYIN_TO_BRAILLE: Record<string, string> = {
+  // Initials
+  'ㄅ': '⠕', 'ㄆ': '⠏', 'ㄇ': '⠍', 'ㄈ': '⠟',
+  'ㄉ': '⠙', 'ㄊ': '⠋', 'ㄋ': '⠝', 'ㄌ': '⠉',
+  'ㄍ': '⠅', 'ㄎ': '⠇', 'ㄏ': '⠗',
+  'ㄐ': '⠅', 'ㄑ': '⠇', 'ㄒ': '⠑',
+  'ㄓ': '⠁', 'ㄔ': '⠃', 'ㄕ': '⠊',
+  'ㄖ': '⠛', 'ㄗ': '⠓', 'ㄘ': '⠚', 'ㄙ': '⠑',
+
+  // Medials
+  'ㄧ': '⠡', 'ㄨ': '⠥', 'ㄩ': '⠳', // Medials i, u, yu
+
+  // Finals
+  'ㄚ': '⠜', 'ㄛ': '⠣', 'ㄜ': '⠮', 'ㄝ': '⠢',
+  'ㄞ': '⠺', 'ㄟ': '⠴', 'ㄠ': '⠩', 'ㄡ': '⠷',
+  'ㄢ': '⠧', 'ㄣ': '⠥', 'ㄤ': '⠭', 'ㄥ': '⠵', 'ㄦ': '⠱',
+  'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴', 'ㄧㄞ': '⠢',
+ 'ㄨㄚ': '⠔', 'ㄨㄛ': '⠒', 'ㄨㄞ': '⠶', 'ㄨㄟ': '⠫', 'ㄨㄢ': '⠻', 'ㄨㄣ': '⠿', 'ㄨㄤ': '⠸', 'ㄨㄥ': '⠯', 'ㄨㄜ': '⠆',
+  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲', 'ㄩㄥ': '⠖',
+
+  // Tones and space
+  'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠐', '˙': '⠁',
+  '2', zhuyin: 'ㄔ' },
+  '⠉': { en: 'c', num: '3', zhuyin: 'ㄌ' },
+  '⠙': { en: 'd', num: '4', zhuyin: 'ㄉ' },
+  '⠑': { en: 'e', num: '5', zhuyin: 'ㄙ' },
+  '⠋': { en: 'f', num: '6', zhuyin: 'ㄊ' },
+  '⠛': { en: 'g', num: '7', zhuyin: 'ㄖ' },
+  '⠓': { en: 'h', num: '8', zhuyin: 'ㄗ' },
+  '⠊': { en: 'i', num: '9', zhuyin: 'ㄕ' },
+  '⠚': { en: 'j', num: '0', zhuyin: 'ㄘ' },
+
+  // Zhuyin specific
+  '⠅': { zhuyin: 'ㄍ/ㄐ' },
+  '⠇': { zhuyin: 'ㄎ/ㄑ' },
+  '⠗': { zhuyin: 'ㄏ/ㄖ' },
+  '⠞': { zhuyin: 'ㄊ/ㄧㄢ' },
+  '⠎': { zhuyin: 'ㄙ/ㄧㄡ' },
+  '⠥': { en: 'u', zhuyin: 'ㄨ' }, // u and ㄨ
+  '⠧': { en: 'v', zhuyin: 'ㄢ' }, // v and ㄢ
+  '⠺': { en: 'w', zhuyin: 'ㄞ' }, // w and ㄞ
+  '⠭': { en: 'x', zhuyin: 'ㄤ' }, // x and ㄤ
+  '⠽': { en: 'y', zhuyin: 'ㄧㄥ' }, // y and ㄧㄥ
+  '⠵': { en: 'z', zhuyin: 'ㄥ' }, // z and ㄥ
+
+  // Punctuation / Zhuyin Finals
+  '⠂': { en: ',', zhuyin: 'ˊ' }, // comma and ˊ
+  '⠄': { en: "'", zhuyin: 'ˇ' }, // apostrophe and ˇ
+  '⠐': { zhuyin: 'ˋ' }, // Tone mark ˋ
+  '⠲': { en: '.', zhuyin: 'ㄩㄣ' }, // period and ㄩㄣ
+  '⠆': { en: ';', zhuyin: 'ㄨㄜ' }, // semicolon and ㄨㄜ
+  '⠒': { en: ':', zhuyin: 'ㄨㄛ' }, // colon and ㄨㄛ
+  '⠦': { en: '?', zhuyin: 'ㄩㄝ' }, // question mark and ㄩㄝ
+  '⠖': { en: '!', zhuyin: 'ㄩㄥ' }, // exclamation mark and ㄩㄥ
+  '⠶': { en: '', zhuyin: 'ㄨㄞ' }, // ㄨㄞ
+  '⠴': { en: '', zhuyin: 'ㄟ' }, // ㄟ
+  '⠬': { zhuyin: 'ㄧㄝ' }, // ㄧㄝ
 };
 
 
@@ -49,21 +164,27 @@ const BRAILLE_TO_ENGLISH = Object.entries(ENGLISH_TO_BRAILLE).reduce((acc, [key,
 
 const ZHUYIN_TO_BRAILLE: Record<string, string> = {
   // Initials
-  'ㄅ': '⠕', 'ㄆ': '⠏', 'ㄇ': '⠍', 'ㄈ': '⠟', 'ㄉ': '⠙', 'ㄊ': '⠋', 'ㄋ': '⠝', 'ㄌ': '⠉',
-  'ㄍ': '⠅', 'ㄎ': '⠇', 'ㄏ': '⠗', 'ㄐ': '⠅', 'ㄑ': '⠚', 'ㄒ': '⠑', 'ㄓ': '⠁', 'ㄔ': '⠃', 'ㄕ': '⠊',
+  'ㄅ': '⠕', 'ㄆ': '⠏', 'ㄇ': '⠍', 'ㄈ': '⠟',
+  'ㄉ': '⠙', 'ㄊ': '⠋', 'ㄋ': '⠝', 'ㄌ': '⠉',
+  'ㄍ': '⠅', 'ㄎ': '⠇', 'ㄏ': '⠗',
+  'ㄐ': '⠅', 'ㄑ': '⠇', 'ㄒ': '⠑',
+  'ㄓ': '⠁', 'ㄔ': '⠃', 'ㄕ': '⠊',
   'ㄖ': '⠛', 'ㄗ': '⠓', 'ㄘ': '⠚', 'ㄙ': '⠑',
+
   // Medials
- 'ㄧ': '⠡', 'ㄨ': '⠥', 'ㄩ': '⠳',//介母 i u yu
+  'ㄧ': '⠡', 'ㄨ': '⠥', 'ㄩ': '⠳', // Medials i, u, yu
+
   // Finals
-  'ㄚ': '⠜', 'ㄛ': '⠣', 'ㄜ': '⠮', 'ㄝ': '⠢', 'ㄞ': '⠺', 'ㄟ': '⠴', 'ㄠ': '⠩', 'ㄡ': '⠷',
+  'ㄚ': '⠜', 'ㄛ': '⠣', 'ㄜ': '⠮', 'ㄝ': '⠢',
+  'ㄞ': '⠺', 'ㄟ': '⠴', 'ㄠ': '⠩', 'ㄡ': '⠷',
   'ㄢ': '⠧', 'ㄣ': '⠥', 'ㄤ': '⠭', 'ㄥ': '⠵', 'ㄦ': '⠱',
-  'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴','ㄧㄞ': '⠢',
+  'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴', 'ㄧㄞ': '⠢',
  'ㄨㄚ': '⠔', 'ㄨㄛ': '⠒', 'ㄨㄞ': '⠶', 'ㄨㄟ': '⠫', 'ㄨㄢ': '⠻', 'ㄨㄣ': '⠿', 'ㄨㄤ': '⠸', 'ㄨㄥ': '⠯', 'ㄨㄜ': '⠆',
- 'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲','ㄩㄥ': '⠖','ㄩㄣˊ': '⠶', 'ㄩㄣˇ':'⠴' , 'ㄩㄣˋ': '⠂' , // Adding tone for ㄩㄣ based on the provided link
+  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲', 'ㄩㄥ': '⠖', 'ㄩ': '⠳',
+
   // Tones and space
- '⠀': ' ', // Space character in Braille (although this mapping might be redundant with ' ': '⠀')
   'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠐', '˙': '⠁',
-  ' ': '⠀'
+  ' ': '⠀', // Space character
 };
 
 const BRAILLE_TO_ZHUYIN = Object.entries(ZHUYIN_TO_BRAILLE).reduce((acc, [key, value]) => {
@@ -81,10 +202,6 @@ const BRAILLE_TO_ZHUYIN = Object.entries(ZHUYIN_TO_BRAILLE).reduce((acc, [key, v
 Object.entries(AMBIGUOUS_BRAILLE).forEach(([brailleChar, mappings]) => {
     if (mappings.zhuyin) {
         BRAILLE_TO_ZHUYIN[brailleChar] = mappings.zhuyin;
-    } else if (!BRAILLE_TO_ZHUYIN[brailleChar] && mappings.en) {
-        BRAILLE_TO_ZHUYIN[brailleChar] = mappings.en;
-    } else if (!BRAILLE_TO_ZHUYIN[brailleChar] && mappings.num) {
-         BRAILLE_TO_ZHUYIN[brailleChar] = mappings.num;
     }
 });
 
