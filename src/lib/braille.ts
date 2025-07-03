@@ -9,21 +9,22 @@ const ENGLISH_TO_BRAILLE: Record<string, string> = {
   '(': '⠐⠣', ')': '⠐⠜', "'": '⠄', '-': '⠤', '/': '⠌',
   
   ' ': '⠀', // Braille space character
- 'number': '⠼', // Number sign
+  'capital': '⠠', // Capital sign
+  'number': '⠼', // Number sign
 };
 
 // Define braille characters that have multiple meanings
 const AMBIGUOUS_BRAILLE: Record<string, { en?: string, num?: string, zhuyin?: string }> = {
-  '⠁': { en: 'a', zhuyin: 'ㄓ' }, // Dot 1 - a, 1, ㄓ
-  '⠃': { en: 'b', zhuyin: 'ㄔ' },
-  '⠉': { en: 'c', zhuyin: 'ㄌ' },
-  '⠙': { en: 'd', zhuyin: 'ㄉ' },
-  '⠑': { en: 'e', zhuyin: 'ㄙ' },
-  '⠋': { en: 'f', zhuyin: 'ㄊ' },
-  '⠛': { en: 'g', zhuyin: 'ㄖ' },
-  '⠓': { en: 'h', zhuyin: 'ㄗ' },
-  '⠊': { en: 'i', zhuyin: 'ㄕ' },
-  '⠚': { en: 'j', zhuyin: 'ㄘ' },
+  '⠁': { en: 'a', num: '1', zhuyin: 'ㄓ' },
+  '⠃': { en: 'b', num: '2', zhuyin: 'ㄔ' },
+  '⠉': { en: 'c', num: '3', zhuyin: 'ㄌ' },
+  '⠙': { en: 'd', num: '4', zhuyin: 'ㄉ' },
+  '⠑': { en: 'e', num: '5', zhuyin: 'ㄙ' },
+  '⠋': { en: 'f', num: '6', zhuyin: 'ㄊ' },
+  '⠛': { en: 'g', num: '7', zhuyin: 'ㄖ' },
+  '⠓': { en: 'h', num: '8', zhuyin: 'ㄗ' },
+  '⠊': { en: 'i', num: '9', zhuyin: 'ㄕ' },
+  '⠚': { en: 'j', num: '0', zhuyin: 'ㄘ' },
 
   // Zhuyin specific
   '⠅': { en: 'k', zhuyin: 'ㄍ/ㄐ' }, // k and ㄍ/ㄐ
@@ -129,18 +130,6 @@ Object.entries(AMBIGUOUS_BRAILLE).forEach(([brailleChar, mappings]) => {
         BRAILLE_TO_ZHUYIN[brailleChar] = mappings.zhuyin;
     }
 });
-
-const BRAILLE_TO_ENGLISH = Object.entries(ENGLISH_TO_BRAILLE).reduce((acc, [key, value]) => {
-  if (value.length === 1) { // simple 1-to-1 mapping
-      if (!acc[value]) acc[value] = key;
-  } else if (value === '⠀') {
-      acc[value] = ' ';
-  }
-  return acc;
-}, {} as Record<string, string>);
-
-
-
 
 export const englishToBraille = (text: string): string => {
   let result = '';
