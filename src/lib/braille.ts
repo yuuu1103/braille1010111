@@ -6,10 +6,43 @@ const ENGLISH_TO_BRAILLE: Record<string, string> = {
   'capital': '⠠',
   'number': '⠼',
 };
+// Define braille characters that have multiple meanings
+const AMBIGUOUS_BRAILLE: Record<string, { en?: string, num?: string, zhuyin?: string }> = {
+  '⠁': { en: 'a', num: '1', zhuyin: 'ㄓ/˙' }, // Example: '⠁' is 'a', '1', 'ㄓ', '˙'
+  '⠃': { en: 'b', num: '2', zhuyin: 'ㄔ' },
+  '⠉': { en: 'c', num: '3', zhuyin: 'ㄌ' },
+  '⠙': { en: 'd', num: '4', zhuyin: 'ㄉ' },
+  '⠑': { en: 'e', num: '5', zhuyin: 'ㄒ/ㄙ' },
+  '⠋': { en: 'f', num: '6', zhuyin: 'ㄊ' },
+  '⠛': { en: 'g', num: '7', zhuyin: 'ㄖ' },
+  '⠓': { en: 'h', num: '8', zhuyin: 'ㄗ' },
+  '⠊': { en: 'i', num: '9', zhuyin: 'ㄕ' },
+  '⠚': { en: 'j', num: '0', zhuyin: 'ㄑ/ㄘ' },
+  '⠥': { en: 'u', zhuyin: 'ㄨ/ㄣ' }, // Add other ambiguous mappings
+  '⠧': { en: 'v', zhuyin: 'ㄢ' },
+  '⠺': { en: 'w', zhuyin: 'ㄞ' },
+  '⠭': { en: 'x', zhuyin: 'ㄤ' },
+  '⠽': { en: 'y', zhuyin: 'ㄧㄥ' },
+  '⠵': { en: 'z', zhuyin: 'ㄥ' },
+  '⠂': { en: ',', zhuyin: 'ˊ' },
+  '⠄': { en: "'", zhuyin: 'ˇ' },
+  '⠐': { en: '', zhuyin: 'ˋ' }, // Assuming this is only a tone mark
+  '⠲': { en: '.', zhuyin: 'ㄩㄣ' },
+  '⠆': { en: ';', zhuyin: 'ㄨㄜ' },
+  '⠒': { en: ':', zhuyin: 'ㄨㄛ' },
+  '⠦': { en: '?', zhuyin: 'ㄩㄝ' },
+  '⠖': { en: '!', zhuyin: 'ㄩㄥ' },
+  '⠶': { en: '', zhuyin: 'ㄨㄞ/ㄩㄣˊ' },
+  '⠴': { en: 'ㄟ', zhuyin: 'ㄧㄛ/ㄩㄣˇ' },
+};
+
+
 
 const BRAILLE_TO_ENGLISH = Object.entries(ENGLISH_TO_BRAILLE).reduce((acc, [key, value]) => {
   if (value.length === 1) { // simple 1-to-1 mapping
       if (!acc[value]) acc[value] = key;
+  } else if (value === '⠀') {
+      acc[value] = ' ';
   }
   return acc;
 }, {} as Record<string, string>);
@@ -27,7 +60,7 @@ const ZHUYIN_TO_BRAILLE: Record<string, string> = {
   'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴','ㄧㄞ': '⠢',
  'ㄨㄚ': '⠔', 'ㄨㄛ': '⠒', 'ㄨㄞ': '⠶', 'ㄨㄟ': '⠫', 'ㄨㄢ': '⠻', 'ㄨㄣ': '⠿', 'ㄨㄤ': '⠸', 'ㄨㄥ': '⠯', 'ㄨㄜ': '⠆',
  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲','ㄩㄥ': '⠖','ㄩㄣˊ': '⠶', 'ㄩㄣˇ':'⠴' , 'ㄩㄣˋ': '⠂' , // Adding tone for ㄩㄣ based on the provided link
-
+  '⠀': ' ',
   // Tones and space
   'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠐', '˙': '⠁',
   ' ': '⠀'
@@ -40,6 +73,19 @@ const BRAILLE_TO_ZHUYIN = Object.entries(ZHUYIN_TO_BRAILLE).reduce((acc, [key, v
     }
     return acc;
 }, {} as Record<string, string>);
+
+// Explicitly handle ambiguous braille characters in Zhuyin mapping, prioritizing Zhuyin
+Object.entries(AMBIGUOUS_BRAILLE).forEach(([brailleChar, mappings]) => {
+    if (mappings.zhuyin) {
+        BRAILLE_TO_ZHUYIN[brailleChar] = mappings.zhuyin;
+    } else if (!BRAILLE_TO_ZHUYIN[brailleChar] && mappings.en) {
+        BRAILLE_TO_ZHUYIN[brailleChar] = mappings.en;
+    } else if (!BRAILLE_TO_ZHUYIN[brailleChar] && mappings.num) {
+         BRAILLE_TO_ZHUYIN[brailleChar] = mappings.num;
+    }
+});
+
+
 
 export const englishToBraille = (text: string): string => {
   let result = '';
@@ -67,6 +113,7 @@ export const brailleToEnglish = (braille: string): string => {
   let result = '';
   let isCapitalized = false;
   let isNumber = false;
+  let prevCharWasNumber = false; // Track if the previous char was a number to handle number sign context
   for (const char of braille) {
     if (char === ENGLISH_TO_BRAILLE['capital']) {
       isCapitalized = true;
@@ -75,26 +122,47 @@ export const brailleToEnglish = (braille: string): string => {
     if (char === ENGLISH_TO_BRAILLE['number']) {
       isNumber = true;
       continue;
-    }
-    if (char === '⠀') {
+    } else if (char === '⠀') {
       isNumber = false;
       isCapitalized = false;
+      prevCharWasNumber = false;
       result += ' ';
       continue;
     }
+
     let mapping = BRAILLE_TO_ENGLISH[char];
-    if (mapping) {
-      if (isNumber) {
-        if (!/[0-9]/.test(mapping)) {
-           isNumber = false;
+
+    // Handle ambiguous characters based on context (number sign)
+    if (AMBIGUOUS_BRAILLE[char]) {
+        const ambiguousMapping = AMBIGUOUS_BRAILLE[char];
+        if (isNumber && ambiguousMapping.num) {
+            mapping = ambiguousMapping.num;
+            prevCharWasNumber = true;
+        } else if (!isNumber && ambiguousMapping.en) {
+            mapping = ambiguousMapping.en;
+            prevCharWasNumber = false;
+        } else {
+            // Default to the first mapping in BRAILLE_TO_ENGLISH if no specific context matches
+            mapping = BRAILLE_TO_ENGLISH[char] || char; // Use the original char if no mapping
+            prevCharWasNumber = false;
         }
-      }
-      if (isCapitalized) {
-        mapping = mapping.toUpperCase();
+    } else {
+        // For non-ambiguous characters, use the direct mapping
+        mapping = BRAILLE_TO_ENGLISH[char] || char; // Use the original char if no mapping
+        prevCharWasNumber = false; // Non-number braille breaks number sequence
+    }
+
+    if (isCapitalized && mapping) {
+      result += mapping.toUpperCase();
         isCapitalized = false;
-      }
+    } else if (mapping) {
       result += mapping;
     }
+    // If a number was just processed, keep isNumber true for the next character unless it's not a number
+    if (!prevCharWasNumber && isNumber) {
+        isNumber = false;
+    }
+
   }
   return result;
 };
@@ -128,16 +196,21 @@ export const brailleToZhuyin = (braille: string): string => {
   let i = 0;
   while (i < braille.length) {
     let matched = false;
-    // Try to match longest possible braille combination (if any longer combinations exist)
-    // Currently, all Zhuyin braille are single characters, but this structure is more robust
     for (let len = 2; len >= 1; len--) { // Check for up to 2 characters, adjust if needed
         if (i + len <= braille.length) {
             const substring = braille.substring(i, i + len);
             if (BRAILLE_TO_ZHUYIN[substring]) {
-                const mapping = BRAILLE_TO_ZHUYIN[substring];
-                result += mapping.split('/')[0]; // Use the first mapping
+                let mapping = BRAILLE_TO_ZHUYIN[substring];
+
+                // Handle ambiguous braille characters in Zhuyin context
+                if (AMBIGUOUS_BRAILLE[substring] && AMBIGUOUS_BRAILLE[substring].zhuyin) {
+                    mapping = AMBIGUOUS_BRAILLE[substring].zhuyin;
+                }
+
+                result += mapping.split('/')[0]; // Always use the first mapping in the Zhuyin context
                 i += len;
                 matched = true;
+
                 break;
             }
         }
