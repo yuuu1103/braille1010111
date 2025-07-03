@@ -169,7 +169,7 @@ export const brailleToEnglish = (braille: string): string => {
 
 export const zhuyinToBraille = (text: string): string => {
   let result = '';
-  // Regex for Zhuyin characters (initials, medials, finals) and tone marks
+  // Regex for Zhuyin characters (initials, medials, finals) and tone marks and spaces
   const zhuyinCharAndToneRegex = /[\u3105-\u3129\u02CA\u02CB\u02C7\u02C9\u00B7]/;
   const toneRegex = /[\u02CA\u02CB\u02C7\u02C9\u00B7]/; // Tone marks
   const initialRegex = /[\u3105-\u3119]/; // Initials ㄅ - ㄙ
@@ -190,56 +190,38 @@ export const zhuyinToBraille = (text: string): string => {
       continue;
     }
 
-    // Check if the current character is a Zhuyin character (including tones)
+    // Check if the current character is a Zhuyin character or a tone mark
     if (isZhuyinCharacter(currentChar)) {
-    // Try to match a full Zhuyin syllable (up to 3 characters: Initial + Medial/Final + Tone)
-    // Try to match longest possible combination (up to 3 characters for Zhuyin)
-    for (let len = 3; len >= 1; len--) {
-      if (i + len <= text.length) {
-        const substring = text.substring(i, i + len);
-        if (ZHUYIN_TO_BRAILLE[substring]) {
- result += ZHUYIN_TO_BRAILLE[substring];
-            i += len; // Move index by the length of the matched substring
+      // Handle single Zhuyin characters (initials, medials, finals, tones)
+      if (ZHUYIN_TO_BRAILLE[currentChar]) {
+        result += ZHUYIN_TO_BRAILLE[currentChar];
+ result += '⠀'.repeat(2); // Add two spaces to fulfill the 3-cell requirement per Zhuyin char/part
+        i++;
           matched = true;
- break;
-        }
       }
-    }
-    if (!matched) {
-        // If a 2 or 3 character combination wasn't matched, try single characters
-        if (ZHUYIN_TO_BRAILLE[currentChar]) {
-            // Special handling for Zhuyin syllables - each part should ideally have a separate braille cell
-            // This is a simplification based on the request "每個注音符號都有三組點字"
-            // We will output up to 3 braille cells for each matched Zhuyin part (Initial, Medial/Final, Tone)
-            let zhuyinPart = currentChar;
-            let braillePart = ZHUYIN_TO_BRAILLE[zhuyinPart];
-
-            // Fill with spaces if needed to ensure 3 cells per Zhuyin character/part
-            // This part of the logic needs refinement based on the exact Zhuyin structure.
-            // For the requested format (3 braille cells per Zhuyin character/part),
-            // we'll just output the braille for the matched character and potentially add spaces.
-            // A more accurate implementation would parse Zhuyin syllables into Initial, Medial/Final, Tone.
-
-            result += braillePart; // Output the braille for the matched Zhuyin character
-
-            // This part of adding spaces to ensure 3 cells needs careful consideration.
-            // The current ZHUYIN_TO_BRAILLE mapping doesn't directly support this 3-cell structure per character.
-            // To fulfill the "每個注音符號都有三組點字" instruction literally with the current mapping:
-            // We can output the braille for the character, then append spaces to make it 3 braille cells total.
-            // This might not be the standard Zhuyin braille representation, but follows the instruction.
-            while (result.length % 3 !== 0) {
-                result += '⠀'; // Add space braille
-            }
-
+      // Try to match common combinations like "ㄨㄛ", "ㄉㄨㄛ", etc. explicitly
+      // This is a simplified approach and might not cover all valid Zhuyin syllables.
+      // A proper Zhuyin parsing would be more robust.
+      else if (i + 1 < text.length) {
+        const nextChar = text[i + 1];
+        const twoCharCombination = currentChar + nextChar;
+        if (ZHUYIN_TO_BRAILLE[twoCharCombination]) {
+          result += ZHUYIN_TO_BRAILLE[twoCharCombination];
+ result += '⠀'; // Add one space to fulfill the 3-cell requirement
+          i++;
           i++;
           matched = true;
         }
-      } else if (text[i] === ' ') {
-        result += '⠀';
+      }
+      if (!matched) {
+ // If no specific mapping is found for the character or combination,
+        // append the character as is or handle as an error.
+ result += currentChar; // Append the character as is
         i++;
         matched = true;
       }
     }
+
 
     if (!matched) {
       // If no match was found for any case, append the original character and move on
@@ -318,4 +300,8 @@ export const braillePatternToChar = (dots: boolean[]): string => {
 
 export const getFontSizeStyle = (size: number) => {
   return { fontSize: `${size}px` };
+};
+
+export const getPageColorStyle = (backgroundColor: string, textColor: string) => {
+  return { backgroundColor, color: textColor };
 };
