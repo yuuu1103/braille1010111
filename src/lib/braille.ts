@@ -60,8 +60,8 @@ const ZHUYIN_TO_BRAILLE: Record<string, string> = {
   'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴','ㄧㄞ': '⠢',
  'ㄨㄚ': '⠔', 'ㄨㄛ': '⠒', 'ㄨㄞ': '⠶', 'ㄨㄟ': '⠫', 'ㄨㄢ': '⠻', 'ㄨㄣ': '⠿', 'ㄨㄤ': '⠸', 'ㄨㄥ': '⠯', 'ㄨㄜ': '⠆',
  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲','ㄩㄥ': '⠖','ㄩㄣˊ': '⠶', 'ㄩㄣˇ':'⠴' , 'ㄩㄣˋ': '⠂' , // Adding tone for ㄩㄣ based on the provided link
-  '⠀': ' ',
   // Tones and space
+ '⠀': ' ',
   'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠐', '˙': '⠁',
   ' ': '⠀'
 };
@@ -169,23 +169,61 @@ export const brailleToEnglish = (braille: string): string => {
 
 export const zhuyinToBraille = (text: string): string => {
   let result = '';
+  const zhuyinRegex = /[\u3105-\u3129\u02CA\u02CB\u02C7\u02C9\u00B7]/; // Basic Zhuyin and tone regex
+
   for (let i = 0; i < text.length; i++) {
     let matched = false;
+
+    // Check if the current character is a Zhuyin character or a tone
+    if (zhuyinRegex.test(text[i]) || text[i] === ' ' || ZHUYIN_TO_BRAILLE[text[i]]) {
     // Try to match longest possible combination (up to 3 characters for Zhuyin)
     for (let len = 3; len >= 1; len--) {
       if (i + len <= text.length) {
         const substring = text.substring(i, i + len);
         if (ZHUYIN_TO_BRAILLE[substring]) {
  result += ZHUYIN_TO_BRAILLE[substring];
- i += len - 1; // Move index by the length of the matched substring
+            i += len; // Move index by the length of the matched substring
           matched = true;
  break;
         }
       }
     }
     if (!matched) {
-      // If no Zhuyin combination is matched, just append the original character
-      result += text[i];
+        // If no multi-character Zhuyin combination is matched, try single character
+        if (ZHUYIN_TO_BRAILLE[text[i]]) {
+          result += ZHUYIN_TO_BRAILLE[text[i]];
+          i++;
+          matched = true;
+        }
+      }
+    } else {
+      // Handle non-Zhuyin characters - treat them as regular characters or words
+      // For simplicity, let's assume non-Zhuyin characters are words and convert them with a space separator
+      let word = '';
+      while (i < text.length && !zhuyinRegex.test(text[i]) && text[i] !== ' ') {
+        word += text[i];
+        i++;
+      }
+
+      if (word.length > 0) {
+        // Add space separator if not the beginning and not a space
+        if (result.length > 0 && result.slice(-1) !== '⠀') {
+          result += '⠀';
+        }
+        // Convert the word to Braille (using English conversion for now, as per requirement)
+        result += englishToBraille(word);
+        matched = true;
+      } else if (text[i] === ' ') {
+        result += '⠀';
+        i++;
+        matched = true;
+      }
+    }
+
+    if (!matched) {
+      // If no match was found for any case, append the original character and move on
+      result += text[i]; // Should ideally not happen with the above logic for Zhuyin and words
+      i++;
     }
   }
   return result;
