@@ -298,10 +298,6 @@ export const braillePatternToChar = (dots: boolean[]): string => {
   return String.fromCharCode(0x2800 + pattern);
 };
 
-export const getFontSizeStyle = (size: number) => {
-  return { fontSize: `${size}px` };
-};
-
 export const getPageColorStyle = (backgroundColor: string, textColor: string) => {
   return { backgroundColor, color: textColor };
 };
