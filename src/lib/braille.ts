@@ -3,7 +3,7 @@ const ENGLISH_TO_BRAILLE: Record<string, string> = {
   'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞', 
   'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
   
-  '1': '⠼⠁', '2': '	⠼⠃', '3': '	⠼⠉', '4': '⠼⠙', '5': '⠼⠑', '6': '⠼⠋', '7': '⠼⠛', '8': '⠼⠓', '9': '⠼⠊', '0': '⠼⠚',
+  '1': '⠼⠁', '2': '⠼⠃', '3': '⠼⠉', '4': '⠼⠙', '5': '⠼⠑', '6': '⠼⠋', '7': '⠼⠛', '8': '⠼⠓', '9': '⠼⠊', '0': '⠼⠚',
   
   '.': '⠲', ',': '⠂', ';': '⠆', ':': '⠒', '?': '⠦', '!': '⠖', 
   '(': '⠐⠣', ')': '⠐⠜', "'": '⠄', '-': '⠤', '/': '⠌',
@@ -15,18 +15,16 @@ const ENGLISH_TO_BRAILLE: Record<string, string> = {
 
 // Define braille characters that have multiple meanings
 const AMBIGUOUS_BRAILLE: Record<string, { en?: string, num?: string, zhuyin?: string }> = {
-  '⠁': { en: 'a', num: '1', zhuyin: 'ㄓ' }, // Dot 1 - a, 1, ㄓ
-  '⠃': { en: 'b', num: 'typescript
-  '⠁': { en: 'a', num: '1', zhuyin: 'ㄓ' }, // Dot 1 - a, 1, ㄓ
-  '⠃': { en: 'b', num: '2', zhuyin: 'ㄔ' },
-  '⠉': { en: 'c', num: '3', zhuyin: 'ㄌ' },
-  '⠙': { en: 'd', num: '4', zhuyin: 'ㄉ' },
-  '⠑': { en: 'e', num: '5', zhuyin: 'ㄙ' },
-  '⠋': { en: 'f', num: '6', zhuyin: 'ㄊ' },
-  '⠛': { en: 'g', num: '7', zhuyin: 'ㄖ' },
-  '⠓': { en: 'h', num: '8', zhuyin: 'ㄗ' },
-  '⠊': { en: 'i', num: '9', zhuyin: 'ㄕ' },
-  '⠚': { en: 'j', num: '0', zhuyin: 'ㄘ' },
+  '⠁': { en: 'a', zhuyin: 'ㄓ' }, // Dot 1 - a, 1, ㄓ
+  '⠃': { en: 'b', zhuyin: 'ㄔ' },
+  '⠉': { en: 'c', zhuyin: 'ㄌ' },
+  '⠙': { en: 'd', zhuyin: 'ㄉ' },
+  '⠑': { en: 'e', zhuyin: 'ㄙ' },
+  '⠋': { en: 'f', zhuyin: 'ㄊ' },
+  '⠛': { en: 'g', zhuyin: 'ㄖ' },
+  '⠓': { en: 'h', zhuyin: 'ㄗ' },
+  '⠊': { en: 'i', zhuyin: 'ㄕ' },
+  '⠚': { en: 'j', zhuyin: 'ㄘ' },
 
   // Zhuyin specific
   '⠅': { zhuyin: 'ㄍ/ㄐ' }, // k and ㄍ/ㄐ
@@ -113,8 +111,7 @@ const ZHUYIN_TO_BRAILLE: Record<string, string> = {
   'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲', 'ㄩㄥ': '⠖',
 
   // Tones and space
-  'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠐', '˙': '⠁',
-  '2', zhuyin: 'ㄔ' },
+  'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠐', '˙': '⠁','2', zhuyin: 'ㄔ' },
   '⠉': { en: 'c', num: '3', zhuyin: 'ㄌ' },
   '⠙': { en: 'd', num: '4', zhuyin: 'ㄉ' },
   '⠑': { en: 'e', num: '5', zhuyin: 'ㄙ' },
