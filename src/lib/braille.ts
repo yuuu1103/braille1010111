@@ -9,7 +9,6 @@ const ENGLISH_TO_BRAILLE: Record<string, string> = {
   '(': '⠐⠣', ')': '⠐⠜', "'": '⠄', '-': '⠤', '/': '⠌',
   
   ' ': '⠀', // Braille space character
-  'capital': '⠠',
  'number': '⠼', // Number sign
 };
 
@@ -27,12 +26,12 @@ const AMBIGUOUS_BRAILLE: Record<string, { en?: string, num?: string, zhuyin?: st
   '⠚': { en: 'j', zhuyin: 'ㄘ' },
 
   // Zhuyin specific
-  '⠅': { zhuyin: 'ㄍ/ㄐ' }, // k and ㄍ/ㄐ
-  '⠇': { zhuyin: 'ㄎ/ㄑ' }, // l and ㄎ/ㄑ
-  '⠗': { zhuyin: 'ㄏ/ㄖ' }, // r and ㄏ/ㄖ
+  '⠅': { en: 'k', zhuyin: 'ㄍ/ㄐ' }, // k and ㄍ/ㄐ
+  '⠇': { en: 'l', zhuyin: 'ㄎ/ㄑ' }, // l and ㄎ/ㄑ
+  '⠗': { en: 'r', zhuyin: 'ㄏ/ㄖ' }, // r and ㄏ/ㄖ
   '⠞': { en: 't', zhuyin: 'ㄧㄢ' }, // t and ㄧㄢ
   '⠎': { en: 's', zhuyin: 'ㄧㄡ' }, // s and ㄧㄡ
-  '⠥': { en: 'u', zhuyin: 'ㄨ/ㄣ' }, // u, ㄨ, and ㄣ
+  '⠥': { en: 'u', zhuyin: 'ㄨ' }, // u and ㄨ
   '⠧': { en: 'v', zhuyin: 'ㄢ' }, // v and ㄢ
   '⠺': { en: 'w', zhuyin: 'ㄨㄟ' }, // w and ㄨㄟ
   '⠭': { en: 'x', zhuyin: 'ㄤ' }, // x and ㄤ
@@ -55,14 +54,13 @@ const AMBIGUOUS_BRAILLE: Record<string, { en?: string, num?: string, zhuyin?: st
   '⠘': { zhuyin: 'ㄩㄢ' }, // ㄩㄢ
   '⠳': { zhuyin: 'ㄩ' }, // ㄩ
   '⠹': { zhuyin: 'ㄧㄣ' }, // ㄧㄣ and ㄥ
-  '⠡': { zhuyin: 'ㄧ' }, // ㄧ and ㄦ
+  '⠡': { zhuyin: 'ㄧ/ㄦ' }, // ㄧ and ㄦ
   '⠣': { zhuyin: 'ㄛ' }, // ㄛ
   '⠜': { zhuyin: 'ㄚ' }, // ㄚ
   '⠮': { zhuyin: 'ㄜ' }, // ㄜ
   '⠢': { zhuyin: 'ㄝ/ㄧㄞ' }, // ㄝ/ㄧㄞ
   '⠩': { zhuyin: 'ㄠ' }, // ㄠ
   '⠷': { zhuyin: 'ㄡ' }, // ㄡ
-  '⠱': { zhuyin: 'ㄢ/ㄣ' }, // ㄢ/ㄣ
   '⠾': { zhuyin: 'ㄧㄚ' }, // ㄧㄚ
   '⠔': { zhuyin: 'ㄨㄚ' }, // ㄨㄚ
   '⠫': { zhuyin: 'ㄨㄟ' }, // ㄨㄟ
@@ -71,10 +69,9 @@ const AMBIGUOUS_BRAILLE: Record<string, { en?: string, num?: string, zhuyin?: st
   '⠨': { zhuyin: 'ㄧㄤ' }, // ㄧㄤ
   '⠂': { en: ',', zhuyin: 'ˊ' }, // comma and ˊ
   '⠄': { en: "'", zhuyin: 'ˇ' }, // apostrophe and ˇ
-  '⠨': { en: 'capital', zhuyin: 'ㄧㄤ' }, // capital sign and ㄧㄤ
+  '⠠': { en: 'capital' }, // capital sign
   '⠼': { en: 'number', zhuyin: 'ㄝ' }, // number sign and ㄝ
   '⠀': { en: ' ', zhuyin: ' ' }, // space character and space
-  '⠴': { zhuyin: 'ㄧㄛ/ㄟ' }, // ㄧㄛ/ㄟ
   '⠹': { zhuyin: 'ㄧㄣ/ㄥ' }, // ㄧㄣ/ㄥ
   '⠡': { zhuyin: 'ㄧ/ㄦ' }, // ㄧ/ㄦ
   '⠁': { zhuyin: '˙/ㄓ' } // Tone mark ˙ and ㄓ
@@ -95,8 +92,8 @@ const ZHUYIN_TO_BRAILLE: Record<string, string> = {
   'ㄅ': '⠕', 'ㄆ': '⠏', 'ㄇ': '⠍', 'ㄈ': '⠟',
   'ㄉ': '⠙', 'ㄊ': '⠋', 'ㄋ': '⠝', 'ㄌ': '⠉',
   'ㄍ': '⠅', 'ㄎ': '⠇', 'ㄏ': '⠗',
-  'ㄐ': '⠅', 'ㄑ': '⠇', 'ㄒ': '⠑',
-  'ㄓ': '⠁', 'ㄔ': '⠃', 'ㄕ': '⠊',
+  'ㄐ': '⠅', 'ㄑ': '⠇', 'ㄒ': '⠊',
+  'ㄓ': '⠁', 'ㄔ': '⠃', 'ㄕ': '⠓',
   'ㄖ': '⠛', 'ㄗ': '⠓', 'ㄘ': '⠚', 'ㄙ': '⠑',
 
   // Medials
@@ -106,78 +103,9 @@ const ZHUYIN_TO_BRAILLE: Record<string, string> = {
   'ㄚ': '⠜', 'ㄛ': '⠣', 'ㄜ': '⠮', 'ㄝ': '⠢',
   'ㄞ': '⠺', 'ㄟ': '⠴', 'ㄠ': '⠩', 'ㄡ': '⠷',
   'ㄢ': '⠧', 'ㄣ': '⠥', 'ㄤ': '⠭', 'ㄥ': '⠵', 'ㄦ': '⠱',
-  'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴', 'ㄧㄞ': '⠢',
+  'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴', 'ㄧㄞ': '⠢', // Fix: ㄧㄛ and ㄧㄞ
  'ㄨㄚ': '⠔', 'ㄨㄛ': '⠒', 'ㄨㄞ': '⠶', 'ㄨㄟ': '⠫', 'ㄨㄢ': '⠻', 'ㄨㄣ': '⠿', 'ㄨㄤ': '⠸', 'ㄨㄥ': '⠯', 'ㄨㄜ': '⠆',
-  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲', 'ㄩㄥ': '⠖',
-
-  // Tones and space
-  'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠐', '˙': '⠁','2', zhuyin: 'ㄔ' },
-  '⠉': { en: 'c', num: '3', zhuyin: 'ㄌ' },
-  '⠙': { en: 'd', num: '4', zhuyin: 'ㄉ' },
-  '⠑': { en: 'e', num: '5', zhuyin: 'ㄙ' },
-  '⠋': { en: 'f', num: '6', zhuyin: 'ㄊ' },
-  '⠛': { en: 'g', num: '7', zhuyin: 'ㄖ' },
-  '⠓': { en: 'h', num: '8', zhuyin: 'ㄗ' },
-  '⠊': { en: 'i', num: '9', zhuyin: 'ㄕ' },
-  '⠚': { en: 'j', num: '0', zhuyin: 'ㄘ' },
-
-  // Zhuyin specific
-  '⠅': { zhuyin: 'ㄍ/ㄐ' },
-  '⠇': { zhuyin: 'ㄎ/ㄑ' },
-  '⠗': { zhuyin: 'ㄏ/ㄖ' },
-  '⠞': { zhuyin: 'ㄊ/ㄧㄢ' },
-  '⠎': { zhuyin: 'ㄙ/ㄧㄡ' },
-  '⠥': { en: 'u', zhuyin: 'ㄨ' }, // u and ㄨ
-  '⠧': { en: 'v', zhuyin: 'ㄢ' }, // v and ㄢ
-  '⠺': { en: 'w', zhuyin: 'ㄞ' }, // w and ㄞ
-  '⠭': { en: 'x', zhuyin: 'ㄤ' }, // x and ㄤ
-  '⠽': { en: 'y', zhuyin: 'ㄧㄥ' }, // y and ㄧㄥ
-  '⠵': { en: 'z', zhuyin: 'ㄥ' }, // z and ㄥ
-
-  // Punctuation / Zhuyin Finals
-  '⠂': { en: ',', zhuyin: 'ˊ' }, // comma and ˊ
-  '⠄': { en: "'", zhuyin: 'ˇ' }, // apostrophe and ˇ
-  '⠐': { zhuyin: 'ˋ' }, // Tone mark ˋ
-  '⠲': { en: '.', zhuyin: 'ㄩㄣ' }, // period and ㄩㄣ
-  '⠆': { en: ';', zhuyin: 'ㄨㄜ' }, // semicolon and ㄨㄜ
-  '⠒': { en: ':', zhuyin: 'ㄨㄛ' }, // colon and ㄨㄛ
-  '⠦': { en: '?', zhuyin: 'ㄩㄝ' }, // question mark and ㄩㄝ
-  '⠖': { en: '!', zhuyin: 'ㄩㄥ' }, // exclamation mark and ㄩㄥ
-  '⠶': { en: '', zhuyin: 'ㄨㄞ' }, // ㄨㄞ
-  '⠴': { en: '', zhuyin: 'ㄟ' }, // ㄟ
-  '⠬': { zhuyin: 'ㄧㄝ' }, // ㄧㄝ
-};
-
-
-
-const BRAILLE_TO_ENGLISH = Object.entries(ENGLISH_TO_BRAILLE).reduce((acc, [key, value]) => {
-  if (value.length === 1) { // simple 1-to-1 mapping
-      if (!acc[value]) acc[value] = key;
-  } else if (value === '⠀') {
-      acc[value] = ' ';
-  }
-  return acc;
-}, {} as Record<string, string>);
-
-const ZHUYIN_TO_BRAILLE: Record<string, string> = {
-  // Initials
-  'ㄅ': '⠕', 'ㄆ': '⠏', 'ㄇ': '⠍', 'ㄈ': '⠟',
-  'ㄉ': '⠙', 'ㄊ': '⠋', 'ㄋ': '⠝', 'ㄌ': '⠉',
-  'ㄍ': '⠅', 'ㄎ': '⠇', 'ㄏ': '⠗',
-  'ㄐ': '⠅', 'ㄑ': '⠇', 'ㄒ': '⠑',
-  'ㄓ': '⠁', 'ㄔ': '⠃', 'ㄕ': '⠊',
-  'ㄖ': '⠛', 'ㄗ': '⠓', 'ㄘ': '⠚', 'ㄙ': '⠑',
-
-  // Medials
-  'ㄧ': '⠡', 'ㄨ': '⠥', 'ㄩ': '⠳', // Medials i, u, yu
-
-  // Finals
-  'ㄚ': '⠜', 'ㄛ': '⠣', 'ㄜ': '⠮', 'ㄝ': '⠢',
-  'ㄞ': '⠺', 'ㄟ': '⠴', 'ㄠ': '⠩', 'ㄡ': '⠷',
-  'ㄢ': '⠧', 'ㄣ': '⠥', 'ㄤ': '⠭', 'ㄥ': '⠵', 'ㄦ': '⠱',
-  'ㄧㄚ': '⠾', 'ㄧㄝ': '⠬', 'ㄧㄠ': '⠪', 'ㄧㄡ': '⠎', 'ㄧㄢ': '⠞', 'ㄧㄣ': '⠹', 'ㄧㄤ': '⠨', 'ㄧㄥ': '⠽', 'ㄧㄛ': '⠴', 'ㄧㄞ': '⠢',
- 'ㄨㄚ': '⠔', 'ㄨㄛ': '⠒', 'ㄨㄞ': '⠶', 'ㄨㄟ': '⠫', 'ㄨㄢ': '⠻', 'ㄨㄣ': '⠿', 'ㄨㄤ': '⠸', 'ㄨㄥ': '⠯', 'ㄨㄜ': '⠆',
-  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲', 'ㄩㄥ': '⠖', 'ㄩ': '⠳',
+  'ㄩㄝ': '⠦', 'ㄩㄢ': '⠘', 'ㄩㄣ': '⠲', 'ㄩㄥ': '⠖', // Add missing finals
 
   // Tones and space
   'ˊ': '⠂', 'ˇ': '⠄', 'ˋ': '⠐', '˙': '⠁',
@@ -201,6 +129,16 @@ Object.entries(AMBIGUOUS_BRAILLE).forEach(([brailleChar, mappings]) => {
         BRAILLE_TO_ZHUYIN[brailleChar] = mappings.zhuyin;
     }
 });
+
+const BRAILLE_TO_ENGLISH = Object.entries(ENGLISH_TO_BRAILLE).reduce((acc, [key, value]) => {
+  if (value.length === 1) { // simple 1-to-1 mapping
+      if (!acc[value]) acc[value] = key;
+  } else if (value === '⠀') {
+      acc[value] = ' ';
+  }
+  return acc;
+}, {} as Record<string, string>);
+
 
 
 
